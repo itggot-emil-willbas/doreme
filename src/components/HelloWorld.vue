@@ -59,7 +59,7 @@ export default {
   methods: {
     fetchDateInfo: function () {
       const baseURL = "https://history.muffinlabs.com/date"
-      this.$http.get(baseURL)
+      this.$http.get(baseURL,{headers:{'Access-Control-Allow-Origin':"*"}})
       .then((result)=>{
         console.log(result)
         this.info = result.data
