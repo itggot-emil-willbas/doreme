@@ -21,8 +21,10 @@
 
       <v-flex xs8 my-5>
         <h1 class="display-1 font-weight-light mb-5">This happend on your birthday:</h1>
-        <v-btn color="primary" @click="fetchDateInfo">Hämta dagens info</v-btn>
-        <p class="subheading font-weight-regular">Something 1: {{info.date}}</p>
+        <v-btn color="primary" @click="getdata">Hämta dagens info</v-btn>
+        <p v-if="data" class="subheading font-weight-regular">Something 1: {{data.data.Events[1].text}}</p>
+        <p v-if="data" class="subheading font-weight-regular">Something 1: {{data.date[1].text}}</p>
+        <p v-if="data" class="subheading font-weight-regular">Interesting fact: In {{data.data.Events[0].year}}, this happend: {{data.data.Events[0].text}}</p>
         <p class="subheading font-weight-regular">Something 2: {{picker}}</p>
         <p class="subheading font-weight-regular">Something 3: {{getYear}}, {{getMonth}}, {{getDay}}</p>
       </v-flex>
@@ -53,17 +55,28 @@ export default {
       picker: new Date().toISOString().substr(0, 10),
       landscape: false,
       reactive: false,
-      info: []
+      data: null,
+      events: null,
+      baseURL: "https://history.muffinlabs.com/date",
+      api: 'http://localhost:4000/muffins/today'
     };
   },
   methods: {
     fetchDateInfo: function () {
-      const baseURL = "https://history.muffinlabs.com/date"
-      this.$http.get(baseURL,{headers:{'Access-Control-Allow-Origin':"*"}})
+      const api =  //HÄR! Skicka req till 4000 ('/getDate') istället, låt server hämta datum
+      this.$http.get(api) //Ta bort Lundholms ful-header
       .then((result)=>{
         console.log(result)
-        this.info = result.data
+        //this.info = result.data
       })
+    },
+    async getdata(){
+      console.log("Nu kör en request till ", this.api)
+      let resp = await this.$http.get(this.api);
+      console.log(resp)
+      this.data = resp.data
+      //this.events = resp.data.data.Events[0]
+      
     }
   },
   computed:{
